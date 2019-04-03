@@ -23,8 +23,8 @@ git clone git@github.com:Lethea/wowza-webrtc-group-call-and-chat.git
 
  There is two project 
 1. Nodejs Client : This includes index.html + wowza webrtc websocket connect api ( api.js )
-   * Wowza Streaming Engine WEBRTC websocket api send publish / play request to the ant server 
-   * Listen ant server websocket response 
+   * Wowza Streaming Engine WEBRTC websocket api send publish / play request to the wowza streaming engine 
+   * Listen wowza webrtc websocket response 
    * Connect Nodejs server for chat room operation such as login / disconnect 
    
 2. Nodejs Server : This provide login to chat room, listen events, messaging
@@ -52,7 +52,7 @@ As you know, webrtc isn't allowed when the page is not safe ( https )
 
 Please install ssl to your wowza streaming engine or proxy pass the request to the wowza webrtc websocket 
 
-Change the ant media websocket url in _**nodeclientjs/assets/js/api.js**_ with your own
+Change the Wowza Webrtc websocket url in _**nodeclientjs/assets/js/api.js**_ with your own
 
 ```
 var wsURL = "wss://59cb91f751ff5.streamlock.net:9443/webrtc-session.json";
@@ -105,7 +105,7 @@ Features
 - [x] PeerConnection / Icecandidate etc webrtc stuff implemented
 - [ ] Selecting Camera / Microphone
 - [ ] Publish Stream Button ( Now starting automatically )
-- [ ] Ant Api Implementation for local user must be changed
+- [ ] Webrtc Api Implementation for local user must be changed
 - [ ] External Player Link For Hls Playback
 - [ ] Typo Control
 - [ ] Test
