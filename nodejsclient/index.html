@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- CSS JS BOOTSTRAP STUFF -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <!-- CSS JS BOOTSTRAP STUFF -->
+
+
+    <title>Wowza Sample</title>
+
+
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="./assets/js/socket.io.js"></script>
+
+
+    <script type="text/javascript" src="./assets/js/index.js"></script>
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/enhancesdp.js"></script>
+    <style>
+        .showUserName{
+            font-size:20px;
+            color: #ff8400;
+            text-align: center;
+        }
+        .chat-body{
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12)!important;
+            background-color: #ffdedf;
+            margin-bottom:20px;
+        }
+        #chatRow {
+            box-shadow: 0 2px 5px 0 blueviolet,0 2px 10px 0 rgba(0,0,0,.12)!important
+        }
+    </style>
+
+</head>
+
+<body>
+<header style="padding-bottom: 100px !important">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EMRE KARATAŞOĞLU - WOWZA WEBRTC CHAT ROOM</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+</header>
+<div class="container" style="width: 100%;">
+    <div class="row" id="loginRow" style="background-color:#dedede; padding: 20px;">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <form class="form-signin">
+                <h1 class="h3 font-weight-normal">Login To Wowza Webrtc Video Chat Room</h1>
+                <div class="form-group">
+                    <label for="nickHelp">Username ( Nickname )</label>
+                    <input type="text" id="nickname" class="form-control"  aria-describedby="nickHelp" placeholder="Enter nickname">
+                    <small id="nickHelp" class="form-text text-muted">Please Use Only English Character.</small>
+                </div>
+                <div class="form-group">
+                    <label for="roomHelp">Room </label>
+                    <input type="text" class="form-control" id="room" aria-describedby="roomHelp" placeholder="Enter Room Name">
+                    <small id="roomHelp" class="form-text text-muted">Enter room name, it can be existing or new one. Sample : first or 15</small>
+                </div>
+
+                <a class="btn btn-lg btn-primary btn-block" type="submit" href="#" id="loginButton">Join</a>
+                <p class="mt-5 mb-3 text-muted">©2019 </p>
+            </form>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+    <div class="row" style="background-color:#e9ecef;padding:20px;display:none" id="infoRow" >
+        <h2>Hello <span id="loggedUserName"></span>, Welcome Room <span id="roomName"></span></h2>
+    </div>
+    <div class="row" id="conferenceRow" style="display:none;backgorund-color:#dedefe; margin-top:20px;" >
+        <div style="padding:10px !important; "> <video id="localVideo" autoplay muted playsinline controls style="height:240px;"></video><p class="showUserName">ME</p></div>
+            <div id="others"></div>
+    </div>
+
+    <div class="row" id="chatRow" style="display: none;">
+        <h4 style="margin:20px auto !important">TEXT CHAT</h4>
+        <div id="chatArea" style="min-height:200px;" class="col-md-12">
+
+
+        </div>
+        <div id="chatTextArea" class="col-md-12">
+            <div class="input-group mb-3 input-group-lg">
+                <input type="text" class="form-control" placeholder="Type Your Message" aria-describedby="inputGroup-sizing-lg" id="message">
+                <div class="input-group-append">
+                    <a class="input-group-text" href="#" id="sendMessage">SEND</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+
+</html>
+<div class="hideitnow" style="display:none">
+    <div class="chat-body white p-3">
+        <div class="header">
+            <strong class="primary">##user##</strong>
+        </div>
+        <hr class="w-100">
+        <p class="mb-0">##message##
+        </p>
+    </div>
+</div>
+
+<script>
+
+    var socketIoConnectionUrl = "https://10.6.1.136";
+
+    $(function () {
+        // Connection
+        var socket = io.connect(socketIoConnectionUrl, {
+            path: '/emre.io',
+            transports: ['websocket']
+        });
+
+
+        socket.on("message", function (response) {
+            switch (response.type) {
+                case "new_user_login":
+                    console.log(response.data + " has joined the room");
+                    playStream(response.data);
+                    break
+                case "user_left":
+                    console.log(response.data + " has left the room");
+                    closeStream(response.data);
+                    $("#" + response.data).parent().remove();
+                    break
+                case "get_user_list":
+                    console.log(" active users", response.data);
+                    for (var i = 0; i < response.data.length; i++) {
+                        if (response.data[i] != socket.nickname) {
+                            playStream(response.data[i]);
+                        }
+                    }
+                    break
+                case "get_message":
+
+                    let messageTemplate = $(".hideitnow").html();
+                    let changeTemplateWithValues = messageTemplate.replace("##user##",response.data.nickname).replace("##message##",response.data.message);
+                    $("#chatArea").append(changeTemplateWithValues);
+
+
+                    break;
+
+            }
+        });
+
+
+        $("#loginButton").click(function () {
+            socket.nickname = $("#nickname").val();
+            socket.room = $("#room").val();
+            socket.emit("login", {nickname: socket.nickname, room: socket.room});
+
+            socket.emit("getRoomClients");
+
+            publishStream();
+
+            $("#loginRow").hide();
+            $("#conferenceRow").show();
+            $("#infoRow").show();
+            $("#chatRow").show();
+
+            $("#roomName").html(socket.room);
+            $("#loggedUserName").html(socket.nickname);
+
+        });
+
+        $("#sendMessage").click(function(){
+            event.preventDefault();
+            let message = $("#message").val();
+            socket.emit("sendMessage",message);
+
+        });
+
+        function playStream(streamName) {
+            $("#others").append('<div style="padding:10px !important; "><video id="' + streamName + '" autoplay playsinline  controls style="height:240px;"></video><p class="showUserName">'+streamName+'</p></div>');
+            setTimeout(function () {
+                startPlay(streamName);
+            }, 5000);
+        }
+
+        function publishStream() {
+            localUser = socket.nickname;
+            openCameraAndMicrophone();
+        }
+
+
+    });
+
+
+
+</script>

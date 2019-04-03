@@ -1,0 +1,22 @@
+{
+  "name": "wowza-webrtc-group-call",
+  "version": "1.0.0",
+  "description": "Wowza Webrtc Group Call Sample",
+  "main": "videochat.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Wowza",
+    "Webrtc",
+    "Group",
+    "Call"
+  ],
+  "author": "Emre Karataşoğlu",
+  "license": "MIT"
+}
