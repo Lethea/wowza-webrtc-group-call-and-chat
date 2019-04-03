@@ -1,9 +1,9 @@
 # wowza-webrtc-group-call-and-chat
-Wowza Webrtc Group Call Sample, it's n to n webrtc sample application on nodejs
+Wowza Webrtc Group Call Sample, it's n to n webrtc sample application with chat room feautures.
 
-This is n to n video chat room for Wowza Streaming Engine Webrtc Server. 
+You can join existing room or create a new room.
 
-It is a simple webrtc group chat application that using Wowza as SFU
+Simple webrtc group chat application that using Wowza as SFU
 
 ![Room Page](https://image.prntscr.com/image/u5-KbF4HRWS1EA5_9ODcxA.png)
 
